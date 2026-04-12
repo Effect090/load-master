@@ -1,0 +1,164 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-outfit: "Outfit", system-ui, sans-serif;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --nav-height: 72px;
+}
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    @apply bg-[#07090F] text-cf-text;
+    font-family: var(--font-outfit);
+    /* Mobile viewport fix */
+    height: -webkit-fill-available;
+  }
+
+  body {
+    @apply bg-[#07090F] text-cf-text antialiased;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    @apply bg-green-600/40 text-white;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-pitch-300 rounded-full;
+  }
+
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+@layer components {
+  /* Page wrapper with bottom nav spacing */
+  .page-content {
+    @apply pb-[calc(var(--nav-height)+1rem+var(--safe-bottom))];
+  }
+
+  /* Glass morphism surface */
+  .glass {
+    background: rgba(15, 21, 37, 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .glass-dark {
+    background: rgba(7, 9, 15, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  /* Gradient text utility */
+  .text-gradient-green {
+    @apply bg-gradient-to-r from-green-400 to-green-600 bg-clip-text text-transparent;
+  }
+
+  .text-gradient-gold {
+    @apply bg-gradient-to-r from-gold-300 to-gold-500 bg-clip-text text-transparent;
+  }
+
+  /* Pitch pattern background */
+  .pitch-bg {
+    background-color: #07090f;
+    background-image: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 40px,
+        rgba(255, 255, 255, 0.015) 40px,
+        rgba(255, 255, 255, 0.015) 41px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 40px,
+        rgba(255, 255, 255, 0.015) 40px,
+        rgba(255, 255, 255, 0.015) 41px
+      );
+  }
+
+  /* Stat bar */
+  .stat-bar {
+    @apply relative h-1.5 rounded-full overflow-hidden bg-white/10;
+  }
+
+  .stat-bar-fill {
+    @apply absolute inset-y-0 left-0 rounded-full transition-all duration-700;
+  }
+
+  /* Glow ring for player cards */
+  .glow-ring {
+    @apply ring-1 ring-inset ring-white/5;
+  }
+
+  /* Bottom sheet / modal */
+  .bottom-sheet {
+    @apply fixed inset-x-0 bottom-0 z-50 rounded-t-3xl bg-cf-surface border-t border-cf-border;
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 1.5rem);
+  }
+
+  /* Match status badge */
+  .status-open {
+    @apply bg-green-600/20 text-green-400 border border-green-600/30;
+  }
+
+  .status-full {
+    @apply bg-gold-500/20 text-gold-400 border border-gold-500/30;
+  }
+
+  .status-completed {
+    @apply bg-blue-500/20 text-blue-400 border border-blue-500/30;
+  }
+
+  .status-cancelled {
+    @apply bg-red-500/20 text-red-400 border border-red-500/30;
+  }
+
+  /* Star rating */
+  .star-btn {
+    @apply transition-all duration-150 cursor-pointer select-none;
+  }
+
+  .star-btn:hover,
+  .star-btn.active {
+    filter: drop-shadow(0 0 6px rgba(240, 180, 41, 0.6));
+  }
+}
+
+@layer utilities {
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
