@@ -1,29 +1,53 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { LangProvider } from "@/lib/i18n";
+import { Providers } from "@/components/Providers";
 
 export const metadata: Metadata = {
-  title: "CasaFoot – Play Football in Casablanca",
+  title: "Load Master — HVAC load calculator",
   description:
-    "Find matches, join games, build your player card. The social football app for Casablanca.",
-  manifest: "/manifest.json",
+    "Fast, transparent HVAC heating and cooling load calculations for multi-zone buildings. Free, local-first, no login required.",
+  manifest: "/manifest.webmanifest",
+  applicationName: "Load Master",
+  appleWebApp: {
+    capable: true,
+    title: "Load Master",
+    statusBarStyle: "black-translucent",
+  },
   icons: {
     icon: "/icon.svg",
     apple: "/icon.svg",
   },
   openGraph: {
-    title: "CasaFoot",
-    description: "Play football in Casablanca. Join matches, build your player card.",
+    title: "Load Master — HVAC load calculator",
+    description:
+      "Fast, transparent heating and cooling load calculations for multi-zone buildings. Free, local-first, no login.",
     type: "website",
+    locale: "en_US",
   },
+  twitter: {
+    card: "summary",
+    title: "Load Master — HVAC load calculator",
+    description:
+      "Fast, transparent heating and cooling load calculations. Free, no login required.",
+  },
+  keywords: [
+    "HVAC",
+    "heating load",
+    "cooling load",
+    "load calculation",
+    "HVAC calculator",
+    "building energy",
+    "thermal load",
+  ],
 };
 
 export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b1220" },
+  ],
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-  themeColor: "#07090F",
 };
 
 export default function RootLayout({
@@ -32,9 +56,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fr" suppressHydrationWarning>
-      <body className="bg-[#07090F] text-cf-text antialiased font-sans">
-        <LangProvider>{children}</LangProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className="font-sans">
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

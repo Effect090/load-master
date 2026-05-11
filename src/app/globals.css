@@ -1,164 +1,94 @@
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap");
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --font-outfit: "Outfit", system-ui, sans-serif;
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --nav-height: 72px;
-}
-
 @layer base {
-  * {
-    -webkit-tap-highlight-color: transparent;
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 217 91% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 26 30% 12%;
+    --success: 142 71% 39%;
+    --success-foreground: 0 0% 100%;
+    --border: 215 18% 89%;
+    --input: 215 18% 89%;
+    --ring: 217 91% 50%;
+    --radius: 0.625rem;
   }
 
-  html {
-    @apply bg-[#07090F] text-cf-text;
-    font-family: var(--font-outfit);
-    /* Mobile viewport fix */
-    height: -webkit-fill-available;
+  .dark {
+    --background: 222 47% 7%;
+    --foreground: 210 40% 96%;
+    --card: 222 47% 9%;
+    --card-foreground: 210 40% 96%;
+    --popover: 222 47% 9%;
+    --popover-foreground: 210 40% 96%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 7%;
+    --secondary: 217 33% 14%;
+    --secondary-foreground: 210 40% 96%;
+    --muted: 217 33% 14%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 33% 16%;
+    --accent-foreground: 210 40% 96%;
+    --destructive: 0 63% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --warning: 38 92% 60%;
+    --warning-foreground: 26 30% 12%;
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    --border: 217 33% 18%;
+    --input: 217 33% 18%;
+    --ring: 217 91% 60%;
+  }
+
+  html, body {
+    height: 100%;
   }
 
   body {
-    @apply bg-[#07090F] text-cf-text antialiased;
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
-    overflow-x: hidden;
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv11", "ss01", "ss03";
   }
 
-  ::selection {
-    @apply bg-green-600/40 text-white;
+  * {
+    @apply border-border;
   }
 
-  ::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    @apply bg-pitch-300 rounded-full;
-  }
-
-  input[type="number"]::-webkit-outer-spin-button,
-  input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  /* Numerical/tabular figures look better aligned in tables */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
   }
 }
 
 @layer components {
-  /* Page wrapper with bottom nav spacing */
-  .page-content {
-    @apply pb-[calc(var(--nav-height)+1rem+var(--safe-bottom))];
+  .panel {
+    @apply rounded-lg border bg-card text-card-foreground shadow-card;
   }
 
-  /* Glass morphism surface */
-  .glass {
-    background: rgba(15, 21, 37, 0.8);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+  .panel-header {
+    @apply px-5 py-4 border-b flex items-center justify-between;
   }
 
-  .glass-dark {
-    background: rgba(7, 9, 15, 0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+  .panel-body {
+    @apply p-5;
   }
 
-  /* Gradient text utility */
-  .text-gradient-green {
-    @apply bg-gradient-to-r from-green-400 to-green-600 bg-clip-text text-transparent;
-  }
-
-  .text-gradient-gold {
-    @apply bg-gradient-to-r from-gold-300 to-gold-500 bg-clip-text text-transparent;
-  }
-
-  /* Pitch pattern background */
-  .pitch-bg {
-    background-color: #07090f;
-    background-image: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 40px,
-        rgba(255, 255, 255, 0.015) 40px,
-        rgba(255, 255, 255, 0.015) 41px
-      ),
-      repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 40px,
-        rgba(255, 255, 255, 0.015) 40px,
-        rgba(255, 255, 255, 0.015) 41px
-      );
-  }
-
-  /* Stat bar */
-  .stat-bar {
-    @apply relative h-1.5 rounded-full overflow-hidden bg-white/10;
-  }
-
-  .stat-bar-fill {
-    @apply absolute inset-y-0 left-0 rounded-full transition-all duration-700;
-  }
-
-  /* Glow ring for player cards */
-  .glow-ring {
-    @apply ring-1 ring-inset ring-white/5;
-  }
-
-  /* Bottom sheet / modal */
-  .bottom-sheet {
-    @apply fixed inset-x-0 bottom-0 z-50 rounded-t-3xl bg-cf-surface border-t border-cf-border;
-    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 1.5rem);
-  }
-
-  /* Match status badge */
-  .status-open {
-    @apply bg-green-600/20 text-green-400 border border-green-600/30;
-  }
-
-  .status-full {
-    @apply bg-gold-500/20 text-gold-400 border border-gold-500/30;
-  }
-
-  .status-completed {
-    @apply bg-blue-500/20 text-blue-400 border border-blue-500/30;
-  }
-
-  .status-cancelled {
-    @apply bg-red-500/20 text-red-400 border border-red-500/30;
-  }
-
-  /* Star rating */
-  .star-btn {
-    @apply transition-all duration-150 cursor-pointer select-none;
-  }
-
-  .star-btn:hover,
-  .star-btn.active {
-    filter: drop-shadow(0 0 6px rgba(240, 180, 41, 0.6));
-  }
-}
-
-@layer utilities {
-  .safe-bottom {
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  .label {
+    @apply text-xs font-medium text-muted-foreground;
   }
 }

@@ -1,3 +1,17 @@
-node_modules/
-.next/
-.env
+node_modules
+.next
+out
+dist
+coverage
+.env*
+!.env.example
+*.tsbuildinfo
+.DS_Store
+
+# Generated at build time from public/sw.template.js — do not commit
+public/sw.js
+
+android/.gradle
+android/app/build
+android/build
+android/local.properties

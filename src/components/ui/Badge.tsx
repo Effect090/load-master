@@ -1,45 +1,36 @@
+import * as React from "react";
 import { cn } from "@/lib/utils";
-import { ReactNode } from "react";
 
-type BadgeVariant = "default" | "green" | "gold" | "red" | "blue" | "outline";
+type Variant =
+  | "default"
+  | "outline"
+  | "muted"
+  | "warning"
+  | "success"
+  | "destructive";
 
-interface BadgeProps {
-  children: ReactNode;
-  variant?: BadgeVariant;
-  className?: string;
-  size?: "sm" | "md";
-}
-
-const variantClasses: Record<BadgeVariant, string> = {
-  default: "bg-cf-surface-2 text-cf-muted border border-cf-border",
-  green: "bg-green-600/20 text-green-400 border border-green-600/30",
-  gold: "bg-gold-DEFAULT/20 text-gold-DEFAULT border border-gold-DEFAULT/30",
-  red: "bg-red-500/20 text-red-400 border border-red-500/30",
-  blue: "bg-blue-500/20 text-blue-400 border border-blue-500/30",
-  outline: "bg-transparent text-cf-muted border border-cf-border",
-};
-
-const sizeClasses = {
-  sm: "text-[10px] px-2 py-0.5 rounded-lg font-semibold tracking-wide",
-  md: "text-xs px-2.5 py-1 rounded-xl font-semibold tracking-wide",
+const VARIANTS: Record<Variant, string> = {
+  default: "bg-primary/10 text-primary border-primary/20",
+  outline: "border bg-transparent text-foreground",
+  muted: "bg-muted text-muted-foreground border-transparent",
+  warning: "bg-warning/15 text-warning border-warning/30",
+  success: "bg-success/15 text-success border-success/30",
+  destructive: "bg-destructive/15 text-destructive border-destructive/30",
 };
 
 export function Badge({
-  children,
-  variant = "default",
   className,
-  size = "md",
-}: BadgeProps) {
+  variant = "default",
+  ...props
+}: React.HTMLAttributes<HTMLDivElement> & { variant?: Variant }) {
   return (
-    <span
+    <div
       className={cn(
-        "inline-flex items-center gap-1",
-        variantClasses[variant],
-        sizeClasses[size],
-        className
+        "inline-flex items-center rounded-md border px-2 py-0.5 text-[11px] font-medium",
+        VARIANTS[variant],
+        className,
       )}
-    >
-      {children}
-    </span>
+      {...props}
+    />
   );
 }

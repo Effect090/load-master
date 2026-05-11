@@ -1,214 +1,251 @@
-# ⚽ CasaFoot
+# Load Master
 
-**The social football app for Casablanca, Morocco.**
+**Fast HVAC heating &amp; cooling load calculations for multi-zone buildings.**
 
-Find matches, join games, rate players, and build your FIFA-style player card.
+Load Master is a free, open-source web app (and Android-ready PWA) that helps
+engineers and technicians produce transparent preliminary HVAC load
+calculations for apartments, offices, houses, classrooms and small commercial
+spaces.
 
----
-
-## Product Overview
-
-CasaFoot helps amateur football players in Casablanca:
-- **Discover & create matches** across the city
-- **Join games** near their neighborhood
-- **Rate each other** after matches (structured, fair, abuse-resistant)
-- **Build a player card** with an overall rating and 6 sub-stats (like FIFA)
-
-The main differentiator: after each completed match, verified participants can rate each other across 5 categories. The app generates a beautiful, shareable FIFA-inspired card that evolves with your real-world performance.
-
----
-
-## Tech Stack
-
-| Layer       | Tech                        |
-|-------------|-----------------------------|
-| Frontend    | Next.js 14 (App Router)     |
-| Styling     | Tailwind CSS (custom tokens)|
-| Backend     | Supabase (Auth, DB, Storage)|
-| Auth        | Supabase Auth (email/pass)  |
-| Language    | TypeScript                  |
-| Forms       | React Hook Form + Zod       |
-| Animations  | Framer Motion               |
-
----
-
-## Getting Started
-
-### 1. Clone & Install
-
-```bash
-cd d:\Projects\footlink
-npm install
-```
-
-### 2. Set Up Supabase
-
-1. Go to [supabase.com](https://supabase.com) and create a new project
-2. In the Supabase dashboard, go to **SQL Editor**
-3. Run the contents of `supabase/schema.sql` (creates all tables, RLS, triggers)
-4. Optionally run `supabase/seed.sql` for sample data
-
-### 3. Configure Environment
-
-Copy `.env.local.example` to `.env.local` and fill in your Supabase credentials:
-
-```bash
-cp .env.local.example .env.local
-```
-
-Edit `.env.local`:
-```
-NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-```
-
-Find these in Supabase → **Settings → API**.
-
-### 4. Run
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000)
-
----
-
-## Project Structure
-
-```
-src/
-├── app/
-│   ├── (auth)/           # Login, Signup pages
-│   │   ├── login/
-│   │   └── signup/
-│   ├── (app)/            # Authenticated pages (with BottomNav)
-│   │   ├── feed/         # Home feed
-│   │   ├── matches/      # Match list, create, detail
-│   │   │   ├── [id]/     # Match detail + join/rate
-│   │   │   └── create/   # Create match form
-│   │   ├── profile/      # Own profile
-│   │   │   └── [id]/     # Other player's profile
-│   │   └── onboarding/   # First-time profile setup
-│   ├── layout.tsx        # Root layout (fonts, meta)
-│   └── page.tsx          # Root redirect
-├── components/
-│   ├── ui/               # Base components (Button, Input, etc.)
-│   ├── PlayerCard.tsx    # FIFA-style card (full + compact)
-│   ├── MatchCard.tsx     # Match list card
-│   ├── BottomNav.tsx     # Mobile navigation bar
-│   └── RatingModal.tsx   # Post-match rating sheet
-├── lib/
-│   ├── supabase/         # Supabase client/server helpers
-│   ├── rating.ts         # Rating calculation logic
-│   └── utils.ts          # Helpers, design tokens
-└── types/
-    └── index.ts          # All TypeScript types
-
-supabase/
-├── schema.sql            # Full DB schema with RLS
-└── seed.sql              # Sample data
-```
+> Transparent simplified engineering load calculation based on public
+> heat-transfer and psychrometric formulas. **Not** a certified regulatory
+> calculation method unless validated by a qualified engineer.
 
 ---
 
 ## Features
 
-### Authentication
-- Email/password signup & login via Supabase Auth
-- Auto profile creation on signup
-- 3-step onboarding (name → position → location)
-- Protected routes via Next.js middleware
+- Multi-zone projects with unlimited zones and envelope elements per zone.
+- Heating &amp; cooling load engine with **fully transparent formulas**.
+- Per-element formula breakdown — every result shows its formula, inputs and
+  intermediate values.
+- Internal gains (lighting, equipment, occupants), ventilation, infiltration
+  (ACH or direct airflow), heat-recovery efficiencies.
+- Solar gain through windows by orientation with editable peak-irradiance
+  presets.
+- Project-level totals with diversity factor + safety margin.
+- Recharts pie/bar charts for load breakdown.
+- PDF report export (`jsPDF` + `jspdf-autotable`).
+- JSON project import/export (no lock-in).
+- Local-first storage with **IndexedDB** — no login required.
+- Light, dark and system theme.
+- English &amp; French UI.
+- PWA-ready (installable, offline cached shell).
+- Capacitor-ready for an Android APK build.
+- Strict TypeScript, calculation-engine unit tests with **Vitest**.
 
-### Player Profile & Card
-- Full name, username, avatar
-- Position, preferred foot, neighborhood, bio
-- **FIFA-style card** with 4 tiers: Bronze (40–59) / Silver (60–74) / Gold (75–84) / Elite (85+)
-- 7 stats on card: PAC · SHO · PAS · DRI · DEF · PHY · FP
+## Tech stack
 
-### Match System
-- Create matches: title, location, date/time, player count (slider), skill level, price
-- Join / leave matches
-- View player list with ratings
-- Organizer can mark matches as completed
+| Layer            | Library                                       |
+| ---------------- | --------------------------------------------- |
+| Framework        | [Next.js 14](https://nextjs.org) (App Router) |
+| UI               | React 18 + Tailwind CSS + custom shadcn-style |
+| Forms            | react-hook-form + Zod                         |
+| State            | Zustand + React Context                       |
+| Charts           | Recharts                                      |
+| Icons            | lucide-react                                  |
+| Storage          | IndexedDB via `idb`                           |
+| PDF              | `jspdf` + `jspdf-autotable`                   |
+| Tests            | Vitest                                        |
+| Mobile wrapper   | Capacitor 6 (Android)                         |
 
-### Rating System
-- Only verified match participants can rate
-- No self-rating (enforced at DB level via CHECK constraint)
-- 5 categories: Technique · Passing/Vision · Defense · Physical · Fair Play
-- 1–5 scale per category
-- **Bayesian weighted average** to prevent abuse from small samples
-- Individual ratings are **private** — only aggregated stats shown publicly
-- Stats update live on the player's card after each rating
-
-### Social Layer
-- View other players' profiles and cards
-- Follow/unfollow players
-- Activity in feed (upcoming matches near you, top players)
-
----
-
-## Rating Calculation
+## Folder layout
 
 ```
-Rating categories → Card stats mapping:
-  pace       ← physical_impact
-  shooting   ← technique
-  dribbling  ← technique (small variance)
-  passing    ← passing_vision
-  defense    ← defense
-  physical   ← physical_impact
-  fair_play  ← fair_play
-
-Scale: 1–5 rating → 40–99 card scale
-  formula: 40 + (rating - 1) × 14.75
-
-Overall (weighted):
-  PAC×14% + SHO×18% + PAS×20% + DRI×16% + DEF×14% + PHY×10% + FP×8%
-
-Bayesian prior (abuse prevention):
-  Before 3 ratings, stats stay close to neutral (50)
-  Each new rating is weighted equally
-  Formula: (3×3 + n×current + incoming) / (3 + n + 1)
+src/
+  app/                  # Next.js routes
+    page.tsx            # landing
+    dashboard/          # project list
+    projects/[id]/      # setup, zones, results, report
+    settings/
+  components/           # AppShell, Sidebar, ProjectForm, ZoneForm,
+                        # EnvelopeElementTable, charts, etc.
+    ui/                 # Button, Card, Input, Select, Field, Badge…
+  features/
+    projects/           # zustand store, factory, settings, useProject
+    zones/              # zone templates
+  lib/
+    calculations/       # heating, cooling, psychrometrics, internal,
+                        # zone, project (PURE FUNCTIONS — UI-free)
+    defaults/           # U-values, internal gains, solar, climate presets
+    pdf/                # PDF report generator
+    storage/            # IndexedDB adapter
+    validation/         # Zod schemas
+    i18n/               # English + French messages
+    utils.ts
+  types/                # Project, Zone, EnvelopeElement, Results, Settings
+  tests/                # Vitest unit tests for the calculation engine
+public/
+  manifest.webmanifest, icon.svg, sw.js
+capacitor.config.ts
 ```
 
----
+The calculation engine in `src/lib/calculations` has no React or DOM
+dependency, so it can be reused by the PDF exporter, future server APIs, or
+unit tests in isolation.
 
-## Design System
+## Calculation method (transparent, public formulas)
 
-| Token         | Value        | Usage                    |
-|---------------|--------------|--------------------------|
-| `cf-bg`       | `#07090F`    | Main background          |
-| `cf-surface`  | `#0F1525`    | Cards, surfaces          |
-| `cf-surface-2`| `#151E30`    | Elevated surfaces        |
-| `cf-border`   | `#1E2D3D`    | Borders                  |
-| `green-600`   | `#16A34A`    | Primary CTA, active nav  |
-| `gold-DEFAULT`| `#F0B429`    | Gold tier, ratings       |
-| `cf-text`     | `#EFF2F7`    | Primary text             |
-| `cf-muted`    | `#8892A4`    | Secondary text           |
+| Load                            | Formula                                                  |
+| ------------------------------- | -------------------------------------------------------- |
+| Heating transmission            | `Q = (U·A + ψ·L) × ΔT_h`                                 |
+| Heating ventilation (sensible)  | `Q = 0.335 × airflow_m3h × ΔT_h × (1 − ε_HR_sens)`       |
+| Heating infiltration (sensible) | `Q = 0.335 × (volume × ACH or direct airflow) × ΔT_h`    |
+| Cooling conduction              | `Q = (U·A + ψ·L) × ΔT_c`                                 |
+| Cooling solar (windows)         | `Q = A_glass × SHGC × I × shading_factor`                |
+| Cooling vent. sensible          | `Q = 0.335 × airflow_m3h × ΔT_c × (1 − ε_HR_sens)`       |
+| Cooling vent. latent            | `Q = 0.83 × airflow_m3h × Δw_g/kg × (1 − ε_HR_lat)`      |
+| People sensible / latent        | `Q = peopleCount × peopleSensible/Latent (preset)`       |
+| Lighting                        | `Q = lightingTotalW or lightingWPerM² × floorArea`       |
+| Equipment                       | user input                                               |
+| Project diversity + safety      | `Q_reco = Σ Q_zone × diversity × (1 + safetyMargin)`     |
 
-Typography: **Outfit** from Google Fonts (300–900 weights)
+Coefficients **0.335** and **0.83** are derived from
+ρ<sub>air</sub> ≈ 1.2 kg/m³, c<sub>p,air</sub> ≈ 1006 J/(kg·K) and
+h<sub>fg</sub> ≈ 2 500 000 J/kg, with airflow expressed in m³/h.
 
----
+Saturation vapor pressure uses the Magnus / August-Roche-Magnus form
+`p_ws(T) = 610.94 × exp(17.625 T / (T + 243.04))` and humidity ratio is
+`W = 0.62198 × p_w / (p − p_w)`.
 
-## Roadmap (Post-MVP)
+## Quick start
 
-- [ ] Push notifications (new match invites, rating received)
-- [ ] Map view of matches (Google Maps / Mapbox)
-- [ ] Photo upload for avatars (Supabase Storage)
-- [ ] Position-specific weighted stats (GK weights ≠ ST weights)
-- [ ] Match invitations (share link)
-- [ ] League/tournament system
-- [ ] Player comparison
-- [ ] Dark/light theme toggle
-- [ ] React Native app (using same Supabase backend)
+Requirements: **Node.js 20+** and **npm**.
 
----
+```bash
+npm install
+npm run dev          # http://localhost:3000
+```
+
+### Useful scripts
+
+| Command            | What it does                                    |
+| ------------------ | ----------------------------------------------- |
+| `npm run dev`      | Run the app locally                             |
+| `npm run build`    | Production build                                |
+| `npm run start`    | Serve the production build                      |
+| `npm run lint`     | ESLint                                          |
+| `npm run typecheck`| TypeScript no-emit check                        |
+| `npm test`         | Run the calculation-engine unit tests           |
+| `npm run test:watch`| Watch tests during development                 |
+
+### Deploy to Vercel (free)
+
+```bash
+vercel
+```
+
+The default `next` build runs out-of-the-box on the Vercel free tier.
+
+## Android (Capacitor)
+
+Two supported strategies, both completely free.
+
+### Recommended: Hosted PWA wrapper
+
+1. Deploy the web app to Vercel free tier (`vercel`).
+2. Open `capacitor.config.ts` and uncomment the `server` block:
+
+   ```ts
+   server: {
+     url: "https://your-loadmaster.vercel.app",
+     cleartext: false,
+   }
+   ```
+
+3. Add the Android platform once:
+
+   ```bash
+   npx cap add android
+   ```
+
+4. Build the APK:
+
+   ```bash
+   npx cap sync android
+   npm run cap:open
+   ```
+
+   In Android Studio: **Build → Build Bundle(s) / APK(s) → Build APK(s)**.
+
+This gives you the full Next.js app inside an Android shell with
+instant updates — push to Vercel and the APK serves the latest UI.
+
+### Alternative: Local-only static export
+
+If you prefer a fully offline APK, refactor the dynamic project routes
+into search params (so Next can produce a complete `out/` directory),
+then:
+
+```bash
+npx next export -o out
+npx cap sync android
+npx cap open android
+```
+
+The current router uses `/projects/[id]/...` segments which require
+known IDs at static-export time — this is a Next.js limitation, not a
+Capacitor one.
+
+## Storage &amp; data
+
+- Projects are stored locally in **IndexedDB** under the key
+  `load-master / projects`. No backend, no login required.
+- You can export any project as JSON from the **Setup**, **Results** or
+  **Report** pages, and re-import it on another device.
+- A future Supabase adapter can be added without touching the calculation
+  engine — only the `src/lib/storage/db.ts` interface needs to be swapped.
+
+## Engineering assumptions
+
+- All units are **SI**: m, m², m³, °C, W, m³/h, g/kg dry air, W/(m²·K).
+- Solar irradiance values per orientation are simplified peak design values
+  and **must be reviewed for the actual climate**.
+- Ground and unconditioned-space boundaries default to the average of
+  indoor and outdoor design temperatures unless overridden.
+- Heat-recovery efficiencies apply to mechanical ventilation only.
+- Safety margin applies to **both** per-zone and project-total recommended
+  capacities: `Q_reco = Q × (1 + safety)`.
+- Diversity factor applies **only** to the project-total recommended
+  capacity: `Q_reco_project = Σ Q_zone × diversity × (1 + safety)`. Per-zone
+  recommended capacities are sized without diversity so a zone can be sized
+  to meet its peak load independently.
+- Internal gains are clamped non-negative and multiplied by an optional
+  diversity factor (0..1).
+- Loads are clamped non-negative; for example, an adjacent room warmer
+  than the indoor set-point produces 0 W of heating transmission.
+
+## Known limitations
+
+- Solar irradiance is a single peak value per orientation, not a 24-h
+  hour-by-hour profile. Suitable for preliminary sizing.
+- No transient/thermal-mass simulation — steady-state design conditions
+  only.
+- No infiltration model from wind/stack pressure; ACH and direct airflow
+  are user-defined.
+- No internal-shading or blinds model beyond a single shading factor.
+- Internal gains use simple presets per occupancy, not full ASHRAE / RT
+  / Manual J tables.
+
+## Future improvements
+
+- Hour-by-hour cooling load using sol-air temperature and CLTD/CLF style
+  multipliers.
+- Per-orientation solar profile by month and latitude (free public
+  algorithms).
+- Wind/stack-driven infiltration model.
+- Optional Supabase or PocketBase backend for cloud sync.
+- Imperial-units toggle (currently SI-first).
+- More extensive calculation tests against published worked examples.
+
+## Disclaimer
+
+> This tool uses transparent engineering formulas and user-defined
+> assumptions. It is **not** a certified regulatory calculation unless
+> validated by a qualified engineer. The author claims no compliance
+> with ASHRAE, Manual J, RT2012, RE2020 or any other proprietary or
+> regulatory method.
 
 ## License
 
-MIT — build on top of it freely.
-
----
-
-*Built with love for Casablanca's football community. ⚽🇲🇦*
+Open-source. Feel free to fork, modify and improve.
