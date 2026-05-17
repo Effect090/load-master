@@ -6,34 +6,39 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { formatPower, formatNumber } from "@/lib/utils";
 import { Flame, Snowflake, Building2, Gauge } from "lucide-react";
 
+function fkW(w: number): string {
+  if (!Number.isFinite(w)) return "—";
+  return `${(w / 1000).toFixed(2)} kW`;
+}
+
 export function ProjectSummaryCards({ result }: { result: ProjectResult }) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <Stat
         icon={<Flame className="size-4" />}
-        label="Total heating"
-        value={formatPower(result.totalHeatingW)}
+        label="Raw total heating"
+        value={fkW(result.totalHeatingW)}
         sub={`${formatNumber(result.heatingPerM2, 1)} W/m²`}
         color="text-primary"
       />
       <Stat
         icon={<Snowflake className="size-4" />}
-        label="Total cooling"
-        value={formatPower(result.totalCoolingW)}
+        label="Raw total cooling"
+        value={fkW(result.totalCoolingW)}
         sub={`${formatNumber(result.coolingPerM2, 1)} W/m²`}
         color="text-warning"
       />
       <Stat
         icon={<Gauge className="size-4" />}
         label="Recommended heating"
-        value={formatPower(result.recommendedHeatingW)}
-        sub="incl. diversity & safety"
+        value={fkW(result.recommendedHeatingW)}
+        sub="diversity × (1 + safety)"
       />
       <Stat
         icon={<Building2 className="size-4" />}
         label="Recommended cooling"
-        value={formatPower(result.recommendedCoolingW)}
-        sub="incl. diversity & safety"
+        value={fkW(result.recommendedCoolingW)}
+        sub="diversity × (1 + safety)"
       />
     </div>
   );

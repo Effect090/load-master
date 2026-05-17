@@ -92,6 +92,6 @@ describe("airCoolingLoads", () => {
   it("latent ventilation load uses Δw, > 0 when outdoor humid", () => {
     const r = airCoolingLoads(zone, CLIMATE);
     expect(r.ventilationLatentW).toBeGreaterThan(0);
-    expect(r.deltaW).toBeGreaterThan(0);
+    expect(r.deltaWGPerKg).toBeGreaterThan(0);
   });
 });

@@ -1,11 +1,12 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 
 export const metadata: Metadata = {
   title: "Load Master — HVAC load calculator",
   description:
-    "Fast, transparent HVAC heating and cooling load calculations for multi-zone buildings. Free, local-first, no login required.",
+    "Fast, transparent HVAC heating and cooling load calculations for multi-zone buildings. Free, local-first.",
   manifest: "/manifest.webmanifest",
   applicationName: "Load Master",
   appleWebApp: {
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: "Load Master — HVAC load calculator",
     description:
-      "Fast, transparent heating and cooling load calculations. Free, no login required.",
+      "Fast, transparent heating and cooling load calculations. Free, open-source.",
   },
   keywords: [
     "HVAC",
@@ -59,6 +60,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className="font-sans">
         <Providers>{children}</Providers>
+        <Analytics />
       </body>
     </html>
   );

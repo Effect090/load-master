@@ -160,7 +160,10 @@ export interface Project {
 
 export interface FormulaTrace {
   label: string;
+  /** Symbolic formula, e.g. "Q = 0.335 × airflow × ΔT × (1 − HR)" */
   formula: string;
+  /** Formula with actual values substituted, e.g. "Q = 0.335 × 35 × 24 × 0.30" */
+  expression?: string;
   inputs: Record<string, number | string>;
   resultW: number;
 }
@@ -169,10 +172,65 @@ export interface EnvelopeElementResult {
   id: string;
   name: string;
   type: EnvelopeType;
+  /** Combined (U·A + ψL) × ΔT_h */
   heatingW: number;
+  /** U·A × ΔT_h only */
+  heatingTransmissionW: number;
+  /** ψL × ΔT_h */
+  heatingThermalBridgeW: number;
+  heatingDeltaTK: number;
+  /** Combined (U·A + ψL) × ΔT_c */
   coolingConductionW: number;
+  /** U·A × ΔT_c only */
+  coolingTransmissionW: number;
+  /** ψL × ΔT_c */
+  coolingThermalBridgeW: number;
+  coolingDeltaTK: number;
   coolingSolarW: number; // 0 unless window
   trace: FormulaTrace[];
+}
+
+/** Psychrometric state derived from climate + altitude. */
+export interface PsychrometricSummary {
+  pressurePa: number;
+  wIndoorGPerKg: number;
+  wOutdoorGPerKg: number;
+  /** max(0, wOutdoor − wIndoor) — used for latent loads. */
+  deltaWGPerKg: number;
+  /** wOutdoor − wIndoor before clamping (negative = indoor more humid). */
+  deltaWRawGPerKg: number;
+}
+
+/** Detailed air-load breakdown including formula traces. */
+export interface AirLoadsDetail {
+  ventilationFlowM3h: number;
+  infiltrationFlowM3h: number;
+  heatingDeltaTK: number;
+  coolingDeltaTK: number;
+  heatRecoverySensible: number;
+  heatRecoveryLatent: number;
+  heatingVentTrace: FormulaTrace;
+  heatingInfilTrace: FormulaTrace;
+  coolingVentSensibleTrace: FormulaTrace;
+  coolingVentLatentTrace: FormulaTrace;
+  coolingInfilSensibleTrace: FormulaTrace;
+  coolingInfilLatentTrace: FormulaTrace;
+}
+
+/** Detailed internal-gains breakdown. */
+export interface InternalGainsDetail {
+  occupancyLabel: string;
+  peopleCount: number;
+  peopleSensibleWPerPerson: number;
+  peopleLatentWPerPerson: number;
+  peopleSensibleW: number;
+  peopleLatentW: number;
+  lightingMethodLabel: string;
+  lightingInputValue: number;
+  lightingW: number;
+  equipmentW: number;
+  diversity: number;
+  traces: FormulaTrace[];
 }
 
 export interface ZoneResult {
@@ -204,6 +262,7 @@ export interface ZoneResult {
 
   totalCoolingW: number;
 
+  /** Raw total × (1 + safetyMargin) — no diversity applied. */
   recommendedHeatingW: number;
   recommendedCoolingW: number;
 
@@ -211,6 +270,9 @@ export interface ZoneResult {
   coolingPerM2: number; // W/m²
 
   envelopeBreakdown: EnvelopeElementResult[];
+  psychrometrics: PsychrometricSummary;
+  airLoadsDetail: AirLoadsDetail;
+  internalGainsDetail: InternalGainsDetail;
   warnings: string[];
 }
 
@@ -221,7 +283,11 @@ export interface ProjectResult {
   totalCoolingW: number;
   totalSensibleW: number;
   totalLatentW: number;
-  recommendedHeatingW: number; // after diversity + safety
+  /** Σ zone totals × (1 + safety) — no diversity. */
+  rawRecommendedHeatingW: number;
+  rawRecommendedCoolingW: number;
+  /** Σ zone totals × diversity × (1 + safety). */
+  recommendedHeatingW: number;
   recommendedCoolingW: number;
   totalArea: number;
   heatingPerM2: number;

@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Plus, Trash2 } from "lucide-react";
-import { uid } from "@/lib/utils";
+import { uid, cn } from "@/lib/utils";
 import { DEFAULT_U_VALUES } from "@/lib/defaults/uvalues";
 
 const TYPES: EnvelopeType[] = ["wall", "roof", "floor", "window", "door"];
@@ -78,7 +78,9 @@ export function EnvelopeElementTable({
               <Th>ψ·L W/K</Th>
               <Th>Adj. T° W</Th>
               <Th>Adj. T° S</Th>
-              <Th></Th>
+              <Th className="sticky right-0 bg-muted/40 shadow-[-4px_0_6px_-4px_rgba(0,0,0,0.1)]">
+                Del.
+              </Th>
             </tr>
           </thead>
           <tbody>
@@ -113,8 +115,9 @@ export function EnvelopeElementTable({
                   <Input
                     type="number"
                     step="0.1"
+                    min={0}
                     value={el.area}
-                    onChange={(e) => update(idx, { area: Number(e.target.value) })}
+                    onChange={(e) => update(idx, { area: Math.max(0, Number(e.target.value)) })}
                     className="h-8 w-20"
                   />
                 </Td>
@@ -122,8 +125,9 @@ export function EnvelopeElementTable({
                   <Input
                     type="number"
                     step="0.01"
+                    min={0.001}
                     value={el.uValue}
-                    onChange={(e) => update(idx, { uValue: Number(e.target.value) })}
+                    onChange={(e) => update(idx, { uValue: Math.max(0.001, Number(e.target.value)) })}
                     className="h-8 w-20"
                   />
                 </Td>
@@ -202,12 +206,13 @@ export function EnvelopeElementTable({
                   <Input
                     type="number"
                     step="0.1"
+                    min={0}
                     value={el.glassArea ?? ""}
                     placeholder={el.type === "window" ? String(el.area) : "—"}
                     onChange={(e) =>
                       update(idx, {
                         glassArea:
-                          e.target.value === "" ? undefined : Number(e.target.value),
+                          e.target.value === "" ? undefined : Math.max(0, Number(e.target.value)),
                       })
                     }
                     className="h-8 w-16"
@@ -217,11 +222,12 @@ export function EnvelopeElementTable({
                   <Input
                     type="number"
                     step="0.1"
+                    min={0}
                     value={el.thermalBridgeWPerK ?? ""}
                     onChange={(e) =>
                       update(idx, {
                         thermalBridgeWPerK:
-                          e.target.value === "" ? undefined : Number(e.target.value),
+                          e.target.value === "" ? undefined : Math.max(0, Number(e.target.value)),
                       })
                     }
                     className="h-8 w-16"
@@ -257,12 +263,13 @@ export function EnvelopeElementTable({
                     className="h-8 w-16"
                   />
                 </Td>
-                <Td>
+                <Td className="sticky right-0 bg-background shadow-[-4px_0_6px_-4px_rgba(0,0,0,0.1)]">
                   <Button
                     size="icon"
                     variant="ghost"
                     onClick={() => remove(idx)}
-                    title="Remove"
+                    title="Delete element"
+                    className="hover:bg-destructive/10"
                   >
                     <Trash2 className="size-4 text-destructive" />
                   </Button>
@@ -282,9 +289,23 @@ export function EnvelopeElementTable({
   );
 }
 
-const Th = ({ children }: { children?: React.ReactNode }) => (
-  <th className="px-2 py-2 font-medium whitespace-nowrap">{children}</th>
+const Th = ({
+  children,
+  className,
+}: {
+  children?: React.ReactNode;
+  className?: string;
+}) => (
+  <th className={cn("px-2 py-2 font-medium whitespace-nowrap", className)}>
+    {children}
+  </th>
 );
-const Td = ({ children }: { children?: React.ReactNode }) => (
-  <td className="px-2 py-1.5 align-middle">{children}</td>
+const Td = ({
+  children,
+  className,
+}: {
+  children?: React.ReactNode;
+  className?: string;
+}) => (
+  <td className={cn("px-2 py-1.5 align-middle", className)}>{children}</td>
 );

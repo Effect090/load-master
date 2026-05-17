@@ -6,6 +6,7 @@ import { I18nProvider } from "./I18nProvider";
 import { useSettingsStore } from "@/features/projects/settings";
 import { useProjectsStore } from "@/features/projects/store";
 import { ServiceWorkerRegister } from "./ServiceWorkerRegister";
+import { AuthProvider } from "./AuthProvider";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const { settings, load, update } = useSettingsStore();
@@ -22,8 +23,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
         language={settings.language}
         setLanguage={(l) => void update({ language: l })}
       >
-        <ServiceWorkerRegister />
-        {children}
+        <AuthProvider>
+          <ServiceWorkerRegister />
+          {children}
+        </AuthProvider>
       </I18nProvider>
     </ThemeProvider>
   );

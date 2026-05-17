@@ -14,6 +14,24 @@ export const MESSAGES = {
       settings: "Settings",
       back: "Back",
     },
+    auth: {
+      signIn: "Sign in",
+      signUp: "Create account",
+      signOut: "Sign out",
+      email: "Email",
+      password: "Password",
+      subtitle: "Sign in to save and manage your HVAC load projects.",
+      checkEmail: "Check your email to confirm your account, then sign in.",
+      errorGeneric: "Authentication failed. Check your email and password.",
+      errorNetwork:
+        "Could not reach Supabase (network blocked). Restart the dev server after editing .env.local, check your API keys, and allow *.supabase.co in the browser.",
+      loading: "Loading…",
+      notConfigured: "Sign-in not configured",
+      notConfiguredHint:
+        "Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to .env.local (see .env.example).",
+      localDataNote:
+        "Projects are still stored in this browser until cloud sync is enabled.",
+    },
     sections: {
       features: "Features",
       transparency: "Calculation transparency",
@@ -159,6 +177,25 @@ export const MESSAGES = {
       newProject: "Nouveau projet",
       settings: "Paramètres",
       back: "Retour",
+    },
+    auth: {
+      signIn: "Connexion",
+      signUp: "Créer un compte",
+      signOut: "Déconnexion",
+      email: "E-mail",
+      password: "Mot de passe",
+      subtitle: "Connectez-vous pour gérer vos projets de bilans thermiques.",
+      checkEmail:
+        "Vérifiez votre e-mail pour confirmer le compte, puis connectez-vous.",
+      errorGeneric: "Échec de l'authentification. Vérifiez l'e-mail et le mot de passe.",
+      errorNetwork:
+        "Impossible de joindre Supabase (réseau bloqué). Redémarrez le serveur après .env.local, vérifiez les clés API et autorisez *.supabase.co dans le navigateur.",
+      loading: "Chargement…",
+      notConfigured: "Connexion non configurée",
+      notConfiguredHint:
+        "Ajoutez NEXT_PUBLIC_SUPABASE_URL et NEXT_PUBLIC_SUPABASE_ANON_KEY dans .env.local (voir .env.example).",
+      localDataNote:
+        "Les projets restent stockés dans ce navigateur jusqu'à la synchronisation cloud.",
     },
     sections: {
       features: "Fonctionnalités",

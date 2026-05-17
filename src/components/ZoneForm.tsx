@@ -60,16 +60,18 @@ export function ZoneForm({
             <Input
               type="number"
               step="0.1"
+              min={0.1}
               value={zone.floorArea}
-              onChange={(e) => patch("floorArea", Number(e.target.value))}
+              onChange={(e) => patch("floorArea", Math.max(0.1, Number(e.target.value)))}
             />
           </Field>
           <Field label={t.zones.height}>
             <Input
               type="number"
               step="0.05"
+              min={0.1}
               value={zone.height}
-              onChange={(e) => patch("height", Number(e.target.value))}
+              onChange={(e) => patch("height", Math.max(0.1, Number(e.target.value)))}
             />
           </Field>
           <Field label={t.zones.volume} hint="floor area × height">
@@ -118,11 +120,12 @@ export function ZoneForm({
             <Input
               type="number"
               step="0.1"
+              min={0}
               value={zone.internalGains.lightingWPerM2 ?? ""}
               onChange={(e) =>
                 patchInternal(
                   "lightingWPerM2",
-                  e.target.value === "" ? undefined : Number(e.target.value),
+                  e.target.value === "" ? undefined : Math.max(0, Number(e.target.value)),
                 )
               }
             />
@@ -131,11 +134,12 @@ export function ZoneForm({
             <Input
               type="number"
               step="1"
+              min={0}
               value={zone.internalGains.lightingTotalW ?? ""}
               onChange={(e) =>
                 patchInternal(
                   "lightingTotalW",
-                  e.target.value === "" ? undefined : Number(e.target.value),
+                  e.target.value === "" ? undefined : Math.max(0, Number(e.target.value)),
                 )
               }
             />
@@ -144,8 +148,9 @@ export function ZoneForm({
             <Input
               type="number"
               step="1"
+              min={0}
               value={zone.internalGains.equipmentW}
-              onChange={(e) => patchInternal("equipmentW", Number(e.target.value))}
+              onChange={(e) => patchInternal("equipmentW", Math.max(0, Number(e.target.value)))}
             />
           </Field>
         </CardContent>
@@ -160,9 +165,10 @@ export function ZoneForm({
             <Input
               type="number"
               step="1"
+              min={0}
               value={zone.ventilation.ventilationAirflowM3h}
               onChange={(e) =>
-                patchVent("ventilationAirflowM3h", Number(e.target.value))
+                patchVent("ventilationAirflowM3h", Math.max(0, Number(e.target.value)))
               }
             />
           </Field>
@@ -185,9 +191,10 @@ export function ZoneForm({
               <Input
                 type="number"
                 step="0.1"
+                min={0}
                 value={zone.ventilation.infiltrationAch ?? 0}
                 onChange={(e) =>
-                  patchVent("infiltrationAch", Number(e.target.value))
+                  patchVent("infiltrationAch", Math.max(0, Number(e.target.value)))
                 }
               />
             </Field>
@@ -196,9 +203,10 @@ export function ZoneForm({
               <Input
                 type="number"
                 step="1"
+                min={0}
                 value={zone.ventilation.infiltrationAirflowM3h ?? 0}
                 onChange={(e) =>
-                  patchVent("infiltrationAirflowM3h", Number(e.target.value))
+                  patchVent("infiltrationAirflowM3h", Math.max(0, Number(e.target.value)))
                 }
               />
             </Field>

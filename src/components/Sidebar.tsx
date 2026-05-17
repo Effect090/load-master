@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "./I18nProvider";
+import { UserMenu } from "./UserMenu";
 
 interface NavItem {
   href: string;
@@ -70,7 +71,10 @@ export function Sidebar({ className }: { className?: string }) {
           );
         })}
       </nav>
-      <div className="mt-auto p-4 border-t text-[11px] text-muted-foreground">
+      <div className="mt-auto p-3 border-t">
+        <UserMenu />
+      </div>
+      <div className="p-4 border-t text-[11px] text-muted-foreground">
         <p className="font-medium text-foreground">Engineering disclaimer</p>
         <p className="mt-1">
           Transparent simplified engineering load calculation based on public

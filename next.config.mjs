@@ -7,17 +7,32 @@
  *   injects inline scripts for hydration and some bundler internals use eval.
  * - style-src needs 'unsafe-inline' because Tailwind CSS ships inline styles.
  * - img-src allows data: (favicon, chart SVGs) and blob: (jsPDF canvas export).
- * - connect-src 'self' only — no external API calls from this app.
+ * - connect-src includes Supabase (auth/API) when configured.
  * - worker-src blob: 'self' — required by the service worker registration.
  * - frame-ancestors 'none' supersedes X-Frame-Options in modern browsers.
  */
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+let supabaseHost = "";
+try {
+  if (SUPABASE_URL) supabaseHost = new URL(SUPABASE_URL).origin;
+} catch {
+  /* ignore invalid URL in env */
+}
+const connectSrc = ["'self'", "https://*.supabase.co", "wss://*.supabase.co"];
+if (supabaseHost) {
+  connectSrc.push(supabaseHost);
+  if (supabaseHost.startsWith("https://")) {
+    connectSrc.push(supabaseHost.replace("https://", "wss://"));
+  }
+}
+
 const CSP = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self'",
-  "connect-src 'self'",
+  `connect-src ${connectSrc.join(" ")}`,
   "media-src 'none'",
   "object-src 'none'",
   "frame-src 'none'",

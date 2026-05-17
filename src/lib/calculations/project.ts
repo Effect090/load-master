@@ -15,6 +15,11 @@ export function computeProjectResult(project: Project): ProjectResult {
   const diversity = clamp01(project.diversityFactor ?? 1);
   const safety = Math.max(0, project.safetyMargin);
 
+  // Raw recommended = safety only (no diversity) — useful for per-zone sizing
+  const rawRecommendedHeatingW = totalHeatingW * (1 + safety);
+  const rawRecommendedCoolingW = totalCoolingW * (1 + safety);
+
+  // Project recommended = diversity × (1 + safety) applied to raw totals
   const recommendedHeatingW = totalHeatingW * diversity * (1 + safety);
   const recommendedCoolingW = totalCoolingW * diversity * (1 + safety);
 
@@ -33,9 +38,19 @@ export function computeProjectResult(project: Project): ProjectResult {
 
   const warnings = unique(zoneResults.flatMap((r) => r.warnings));
 
-  if (project.zones.length === 0) {
-    warnings.unshift("Project has no zones yet.");
-  }
+  if (project.zones.length === 0) warnings.unshift("Project has no zones yet.");
+  if (project.safetyMargin > 0.3)
+    warnings.push(
+      `Safety margin is ${(project.safetyMargin * 100).toFixed(0)}% — values above 30% are unusual.`,
+    );
+  if (project.diversityFactor < 0 || project.diversityFactor > 1)
+    warnings.push(
+      `Diversity factor (${project.diversityFactor}) is outside the valid range 0–1.`,
+    );
+  if (project.diversityFactor < 0.5 && project.diversityFactor >= 0)
+    warnings.push(
+      `Diversity factor is ${project.diversityFactor} — very low, project recommended capacity will be heavily reduced.`,
+    );
 
   return {
     projectId: project.id,
@@ -44,6 +59,8 @@ export function computeProjectResult(project: Project): ProjectResult {
     totalCoolingW,
     totalSensibleW,
     totalLatentW,
+    rawRecommendedHeatingW,
+    rawRecommendedCoolingW,
     recommendedHeatingW,
     recommendedCoolingW,
     totalArea,

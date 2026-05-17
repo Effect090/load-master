@@ -16,6 +16,9 @@
     "cap:open": "cap open android"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.49.1",
+    "@vercel/analytics": "^1.5.0",
     "@hookform/resolvers": "^3.9.0",
     "clsx": "^2.1.1",
     "idb": "^8.0.0",

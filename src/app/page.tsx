@@ -7,6 +7,7 @@ import { ArrowRight, Check, Thermometer, Wind, Cpu } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useI18n } from "@/components/I18nProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { UserMenu } from "@/components/UserMenu";
 import { useProjectsStore } from "@/features/projects/store";
 import {
   createDemoProject,
@@ -43,12 +44,7 @@ export default function LandingPage() {
           </div>
         </div>
         <div className="ml-auto flex items-center gap-2">
-          <Link
-            href="/dashboard"
-            className="text-sm text-muted-foreground hover:text-foreground"
-          >
-            {t.nav.dashboard}
-          </Link>
+          <UserMenu />
           <ThemeToggle />
         </div>
       </header>

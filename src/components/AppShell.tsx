@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Sidebar } from "./Sidebar";
 import { ThemeToggle } from "./ThemeToggle";
+import { UserMenu } from "./UserMenu";
 import { Menu, X } from "lucide-react";
 
 export function AppShell({
@@ -57,6 +58,7 @@ export function AppShell({
           </div>
           <div className="flex items-center gap-2">
             {actions}
+            <UserMenu compact />
             <ThemeToggle />
           </div>
         </header>
