@@ -2,73 +2,79 @@
 
 import * as React from "react";
 import type { ProjectResult } from "@/types";
-import { Card, CardContent } from "@/components/ui/Card";
-import { formatPower, formatNumber } from "@/lib/utils";
-import { Flame, Snowflake, Building2, Gauge } from "lucide-react";
+import { MetricCard } from "@/components/ui/MetricCard";
+import { formatNumber } from "@/lib/utils";
+import {
+  Flame,
+  Snowflake,
+  Gauge,
+  Building2,
+} from "lucide-react";
 
 function fkW(w: number): string {
   if (!Number.isFinite(w)) return "—";
-  return `${(w / 1000).toFixed(2)} kW`;
+  return (w / 1000).toFixed(2);
 }
 
-export function ProjectSummaryCards({ result }: { result: ProjectResult }) {
+export function ProjectSummaryCards({
+  result,
+  safetyMargin,
+  diversityFactor,
+}: {
+  result: ProjectResult;
+  safetyMargin?: number;
+  diversityFactor?: number;
+}) {
+  const safetyChip =
+    safetyMargin != null
+      ? `+${Math.round(safetyMargin * 100)}% safety`
+      : undefined;
+
+  const recoChip =
+    diversityFactor != null && safetyMargin != null
+      ? `${Math.round(diversityFactor * 100)}% × +${Math.round(safetyMargin * 100)}%`
+      : undefined;
+
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <Stat
+      <MetricCard
         icon={<Flame className="size-4" />}
-        label="Raw total heating"
+        label="Total heating"
         value={fkW(result.totalHeatingW)}
-        sub={`${formatNumber(result.heatingPerM2, 1)} W/m²`}
-        color="text-primary"
+        unit="kW"
+        sub={`${formatNumber(result.heatingPerM2, 1)} W/m² · raw load`}
+        tone="primary"
+        hint="Sum of zone heating loads (transmission + ventilation + infiltration), before safety and diversity factors."
       />
-      <Stat
+      <MetricCard
         icon={<Snowflake className="size-4" />}
-        label="Raw total cooling"
+        label="Total cooling"
         value={fkW(result.totalCoolingW)}
-        sub={`${formatNumber(result.coolingPerM2, 1)} W/m²`}
-        color="text-warning"
+        unit="kW"
+        sub={`${formatNumber(result.coolingPerM2, 1)} W/m² · sensible + latent`}
+        tone="info"
+        hint="Sum of zone sensible + latent cooling loads (envelope, solar, internal gains, OA), before safety and diversity factors."
       />
-      <Stat
+      <MetricCard
         icon={<Gauge className="size-4" />}
         label="Recommended heating"
         value={fkW(result.recommendedHeatingW)}
+        unit="kW"
         sub="diversity × (1 + safety)"
+        tone="primary"
+        chip={recoChip}
+        hint="Final installed capacity = total × diversity × (1 + safety margin). Use this for equipment sizing."
       />
-      <Stat
+      <MetricCard
         icon={<Building2 className="size-4" />}
         label="Recommended cooling"
         value={fkW(result.recommendedCoolingW)}
+        unit="kW"
         sub="diversity × (1 + safety)"
+        tone="info"
+        chip={recoChip ?? safetyChip}
+        hint="Final installed capacity = total × diversity × (1 + safety margin). Use this for equipment sizing."
       />
     </div>
-  );
-}
-
-function Stat({
-  icon,
-  label,
-  value,
-  sub,
-  color,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  sub?: string;
-  color?: string;
-}) {
-  return (
-    <Card>
-      <CardContent className="p-4 flex flex-col gap-1">
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span className={color}>{icon}</span>
-          {label}
-        </div>
-        <div className={`text-xl font-semibold tabular-nums ${color ?? ""}`}>
-          {value}
-        </div>
-        {sub && <div className="text-[11px] text-muted-foreground">{sub}</div>}
-      </CardContent>
-    </Card>
   );
 }

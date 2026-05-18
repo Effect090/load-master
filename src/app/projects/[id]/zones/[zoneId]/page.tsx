@@ -5,14 +5,25 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { ProjectTabs } from "@/components/ProjectTabs";
+import { ProjectHeader } from "@/components/ProjectHeader";
 import { ZoneForm } from "@/components/ZoneForm";
 import { EnvelopeElementTable } from "@/components/EnvelopeElementTable";
 import { ZoneResultsTable } from "@/components/ZoneResultsTable";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { ArrowLeft } from "lucide-react";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { ArrowLeft, AlertCircle, Square } from "lucide-react";
 import { useProject } from "@/features/projects/useProject";
-import { computeZoneResult } from "@/lib/calculations";
+import {
+  computeZoneResult,
+  computeProjectResult,
+} from "@/lib/calculations";
 import type { Zone } from "@/types";
 import { useI18n } from "@/components/I18nProvider";
 
@@ -23,17 +34,34 @@ export default function ZoneEditPage() {
   const { project, setProject, notFound } = useProject(projectId);
   const { t } = useI18n();
 
+  const projectResult = React.useMemo(
+    () => (project ? computeProjectResult(project) : undefined),
+    [project],
+  );
+
   if (notFound) {
     return (
       <AppShell title={t.project.zones}>
-        <div className="text-sm text-muted-foreground">Project not found.</div>
+        <EmptyState
+          icon={<AlertCircle className="size-6" />}
+          title="Project not found"
+          action={
+            <Link href="/dashboard">
+              <Button>Back to dashboard</Button>
+            </Link>
+          }
+        />
       </AppShell>
     );
   }
   if (!project) {
     return (
       <AppShell title={t.project.zones}>
-        <div className="text-sm text-muted-foreground">Loading…</div>
+        <div className="flex flex-col gap-6">
+          <Skeleton className="h-32" />
+          <Skeleton className="h-12" />
+          <Skeleton className="h-96" />
+        </div>
       </AppShell>
     );
   }
@@ -42,7 +70,15 @@ export default function ZoneEditPage() {
   if (!zone) {
     return (
       <AppShell title={t.project.zones}>
-        <div className="text-sm text-muted-foreground">Zone not found.</div>
+        <EmptyState
+          icon={<AlertCircle className="size-6" />}
+          title="Zone not found"
+          action={
+            <Link href={`/projects/${project.id}/zones`}>
+              <Button>Back to zones</Button>
+            </Link>
+          }
+        />
       </AppShell>
     );
   }
@@ -71,13 +107,19 @@ export default function ZoneEditPage() {
       }
     >
       <div className="flex flex-col gap-6">
+        <ProjectHeader project={project} result={projectResult} />
         <ProjectTabs projectId={project.id} />
 
         <ZoneForm zone={zone} onChange={update} />
 
         <Card>
           <CardHeader>
-            <CardTitle>{t.zones.envelope}</CardTitle>
+            <div className="flex items-center gap-2">
+              <span className="size-7 rounded-md bg-primary/10 text-primary grid place-items-center">
+                <Square className="size-4" />
+              </span>
+              <CardTitle>{t.zones.envelope}</CardTitle>
+            </div>
           </CardHeader>
           <CardContent>
             <EnvelopeElementTable

@@ -5,7 +5,14 @@ import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/Button";
 import { ProjectCard } from "@/components/ProjectCard";
-import { Plus, Upload } from "lucide-react";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { Skeleton } from "@/components/ui/Skeleton";
+import {
+  AnimatedList,
+  AnimatedItem,
+} from "@/components/ui/AnimatedSection";
+import { Plus, Upload, FolderKanban } from "lucide-react";
 import { useProjectsStore } from "@/features/projects/store";
 import {
   createEmptyProject,
@@ -20,6 +27,7 @@ export default function DashboardPage() {
   const { projects, loaded, upsert, remove } = useProjectsStore();
   const { t } = useI18n();
   const fileRef = React.useRef<HTMLInputElement>(null);
+  const [importError, setImportError] = React.useState<string | null>(null);
 
   async function newProject() {
     const p = createEmptyProject();
@@ -33,16 +41,17 @@ export default function DashboardPage() {
   }
 
   async function del(id: string) {
-    if (!confirm("Delete this project?")) return;
+    if (!confirm("Delete this project? This action cannot be undone.")) return;
     await remove(id);
   }
 
   function onImport(file: File) {
+    setImportError(null);
     const reader = new FileReader();
     reader.onload = async () => {
       const result = parseProjectJson(String(reader.result));
       if (!result.ok || !result.project) {
-        alert(`Could not import: ${result.error}`);
+        setImportError(result.error ?? "Invalid project file");
         return;
       }
       await upsert(result.project);
@@ -51,64 +60,84 @@ export default function DashboardPage() {
   }
 
   return (
-    <AppShell
-      title={t.nav.dashboard}
-      actions={
-        <>
-          <input
-            type="file"
-            accept="application/json"
-            className="hidden"
-            ref={fileRef}
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (f) onImport(f);
-              e.target.value = "";
-            }}
-          />
-          <Button variant="outline" onClick={() => fileRef.current?.click()}>
-            <Upload className="size-4" /> Import
-          </Button>
-          <Button onClick={newProject}>
-            <Plus className="size-4" /> {t.nav.newProject}
-          </Button>
-        </>
-      }
-    >
-      {!loaded ? (
-        <div className="text-sm text-muted-foreground">Loading…</div>
-      ) : projects.length === 0 ? (
-        <EmptyState onCreate={newProject} />
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {projects.map((p) => (
-            <ProjectCard
-              key={p.id}
-              project={p}
-              onDuplicate={duplicate}
-              onDelete={del}
-            />
-          ))}
-        </div>
-      )}
-    </AppShell>
-  );
-}
+    <AppShell title={t.nav.dashboard}>
+      <div className="flex flex-col gap-6">
+        <PageHeader
+          eyebrow="Workspace"
+          title={t.nav.dashboard}
+          description="Manage your HVAC load calculation projects. All data stays local in your browser unless you export or sync."
+          actions={
+            <>
+              <input
+                type="file"
+                accept="application/json"
+                className="hidden"
+                ref={fileRef}
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) onImport(f);
+                  e.target.value = "";
+                }}
+              />
+              <Button variant="outline" onClick={() => fileRef.current?.click()}>
+                <Upload className="size-4" />
+                Import
+              </Button>
+              <Button onClick={newProject}>
+                <Plus className="size-4" />
+                {t.nav.newProject}
+              </Button>
+            </>
+          }
+        />
 
-function EmptyState({ onCreate }: { onCreate: () => void }) {
-  return (
-    <div className="rounded-lg border bg-card p-10 text-center flex flex-col items-center gap-3">
-      <div className="size-10 rounded-md bg-primary/10 text-primary grid place-items-center">
-        <Plus className="size-5" />
+        {importError && (
+          <div className="rounded-lg border border-destructive/30 bg-destructive/8 text-destructive px-4 py-3 text-sm flex items-center justify-between gap-3">
+            <span>Could not import: {importError}</span>
+            <button
+              onClick={() => setImportError(null)}
+              className="text-xs underline-offset-2 hover:underline"
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
+
+        {!loaded ? (
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="h-[230px]" />
+            ))}
+          </div>
+        ) : projects.length === 0 ? (
+          <EmptyState
+            icon={<FolderKanban className="size-6" />}
+            title="No projects yet"
+            description="Create your first HVAC project to start defining zones, envelope and ventilation data, and compute heating & cooling loads."
+            action={
+              <Button onClick={newProject}>
+                <Plus className="size-4" />
+                Create project
+              </Button>
+            }
+          />
+        ) : (
+          <AnimatedList
+            className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
+            stagger={0.04}
+          >
+            {projects.map((p) => (
+              <AnimatedItem key={p.id}>
+                <ProjectCard
+                  project={p}
+                  onDuplicate={duplicate}
+                  onDelete={del}
+                />
+              </AnimatedItem>
+            ))}
+          </AnimatedList>
+        )}
       </div>
-      <h3 className="text-base font-semibold">No projects yet</h3>
-      <p className="text-sm text-muted-foreground max-w-md">
-        Create your first project to start defining zones, envelope and
-        ventilation data, and compute heating &amp; cooling loads.
-      </p>
-      <Button onClick={onCreate} className="mt-2">
-        <Plus className="size-4" /> Create project
-      </Button>
-    </div>
+    </AppShell>
   );
 }

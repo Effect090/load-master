@@ -4,74 +4,117 @@
 
 @layer base {
   :root {
+    /* Surfaces — soft off-white with cool engineering tint */
     --background: 210 40% 98%;
     --foreground: 222 47% 11%;
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-    --primary: 217 91% 50%;
+
+    /* Brand — deep navy primary with light-blue accent */
+    --primary: 222 78% 32%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 96%;
+    --primary-soft: 217 91% 96%;
+    --accent-blue: 213 94% 68%;
+
+    --secondary: 215 30% 96%;
     --secondary-foreground: 222 47% 11%;
-    --muted: 210 40% 96%;
+    --muted: 215 24% 96%;
     --muted-foreground: 215 16% 47%;
-    --accent: 210 40% 96%;
+    --accent: 215 30% 96%;
     --accent-foreground: 222 47% 11%;
+
+    /* Semantic — soft tones */
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 26 30% 12%;
-    --success: 142 71% 39%;
+    --success: 142 64% 38%;
     --success-foreground: 0 0% 100%;
-    --border: 215 18% 89%;
-    --input: 215 18% 89%;
-    --ring: 217 91% 50%;
+    --info: 213 94% 50%;
+    --info-foreground: 0 0% 100%;
+
+    --border: 215 22% 91%;
+    --input: 215 22% 89%;
+    --ring: 213 94% 50%;
     --radius: 0.625rem;
   }
 
   .dark {
-    --background: 222 47% 7%;
+    --background: 222 47% 6%;
     --foreground: 210 40% 96%;
-    --card: 222 47% 9%;
+    --card: 222 40% 9%;
     --card-foreground: 210 40% 96%;
-    --popover: 222 47% 9%;
+    --popover: 222 40% 9%;
     --popover-foreground: 210 40% 96%;
-    --primary: 217 91% 60%;
+
+    --primary: 213 94% 60%;
     --primary-foreground: 222 47% 7%;
-    --secondary: 217 33% 14%;
+    --primary-soft: 222 47% 16%;
+    --accent-blue: 213 94% 70%;
+
+    --secondary: 222 33% 14%;
     --secondary-foreground: 210 40% 96%;
-    --muted: 217 33% 14%;
+    --muted: 222 33% 14%;
     --muted-foreground: 215 20% 65%;
-    --accent: 217 33% 16%;
+    --accent: 222 33% 16%;
     --accent-foreground: 210 40% 96%;
-    --destructive: 0 63% 50%;
+
+    --destructive: 0 63% 55%;
     --destructive-foreground: 0 0% 100%;
     --warning: 38 92% 60%;
     --warning-foreground: 26 30% 12%;
-    --success: 142 71% 45%;
+    --success: 142 64% 48%;
     --success-foreground: 0 0% 100%;
+    --info: 213 94% 65%;
+    --info-foreground: 222 47% 7%;
+
     --border: 217 33% 18%;
     --input: 217 33% 18%;
-    --ring: 217 91% 60%;
+    --ring: 213 94% 60%;
   }
 
-  html, body {
+  html,
+  body {
     height: 100%;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "cv11", "ss01", "ss03";
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   * {
     @apply border-border;
   }
 
-  /* Numerical/tabular figures look better aligned in tables */
+  /* Tabular numerals for engineering values */
   .tabular-nums {
     font-variant-numeric: tabular-nums;
+  }
+
+  /* Pretty scrollbar (subtle) */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 999px;
+    border: 2px solid hsl(var(--background));
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.4);
+  }
+
+  /* Selection color uses brand */
+  ::selection {
+    background: hsl(var(--primary) / 0.18);
+    color: hsl(var(--foreground));
   }
 }
 
@@ -89,6 +132,44 @@
   }
 
   .label {
-    @apply text-xs font-medium text-muted-foreground;
+    @apply text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground;
+  }
+
+  /* Engineering-style number display */
+  .metric-value {
+    @apply font-semibold tabular-nums tracking-tight;
+  }
+
+  /* Subtle dot pattern for premium hero / empty states */
+  .bg-grid {
+    background-image: radial-gradient(
+      hsl(var(--border)) 1px,
+      transparent 1px
+    );
+    background-size: 18px 18px;
+  }
+
+  /* Soft inner gradient surface used in metric cards */
+  .surface-soft {
+    background: linear-gradient(
+      180deg,
+      hsl(var(--card)) 0%,
+      hsl(var(--muted) / 0.4) 100%
+    );
+  }
+
+  /* Focus ring helper */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+  }
+}
+
+@layer utilities {
+  /* Reduced-motion: disable transforms but keep micro fade */
+  @media (prefers-reduced-motion: reduce) {
+    .motion-safe-only {
+      animation: none !important;
+      transition: none !important;
+    }
   }
 }

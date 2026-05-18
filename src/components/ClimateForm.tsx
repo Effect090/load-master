@@ -9,7 +9,15 @@ import { CLIMATE_PRESETS, climateFromPreset } from "@/lib/defaults/climate";
 import { useI18n } from "./I18nProvider";
 
 const ORIENTATIONS: Orientation[] = [
-  "N", "NE", "E", "SE", "S", "SW", "W", "NW", "horizontal",
+  "N",
+  "NE",
+  "E",
+  "SE",
+  "S",
+  "SW",
+  "W",
+  "NW",
+  "horizontal",
 ];
 
 export function ClimateForm({
@@ -38,12 +46,13 @@ export function ClimateForm({
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="grid gap-5 md:grid-cols-2">
       <Field label={t.project.city}>
         <div className="flex gap-2">
           <Input
             value={climate.city}
             onChange={(e) => patch("city", e.target.value)}
+            placeholder="Paris, Lyon, Geneva…"
           />
           <Select
             value=""
@@ -52,7 +61,9 @@ export function ClimateForm({
           >
             <option value="">Preset…</option>
             {CLIMATE_PRESETS.map((p) => (
-              <option key={p.city} value={p.city}>{p.city}</option>
+              <option key={p.city} value={p.city}>
+                {p.city}
+              </option>
             ))}
           </Select>
         </div>
@@ -63,6 +74,7 @@ export function ClimateForm({
           type="number"
           value={climate.altitudeM ?? 0}
           onChange={(e) => patch("altitudeM", Number(e.target.value))}
+          suffix="m"
         />
       </Field>
 
@@ -72,6 +84,7 @@ export function ClimateForm({
           step="0.5"
           value={climate.indoorWinterDb}
           onChange={(e) => patch("indoorWinterDb", Number(e.target.value))}
+          suffix="°C"
         />
       </Field>
       <Field label={t.project.outdoorWinter}>
@@ -80,6 +93,7 @@ export function ClimateForm({
           step="0.5"
           value={climate.outdoorWinterDb}
           onChange={(e) => patch("outdoorWinterDb", Number(e.target.value))}
+          suffix="°C"
         />
       </Field>
 
@@ -89,6 +103,7 @@ export function ClimateForm({
           step="0.5"
           value={climate.indoorSummerDb}
           onChange={(e) => patch("indoorSummerDb", Number(e.target.value))}
+          suffix="°C"
         />
       </Field>
       <Field label={t.project.outdoorSummer}>
@@ -97,6 +112,7 @@ export function ClimateForm({
           step="0.5"
           value={climate.outdoorSummerDb}
           onChange={(e) => patch("outdoorSummerDb", Number(e.target.value))}
+          suffix="°C"
         />
       </Field>
 
@@ -104,21 +120,32 @@ export function ClimateForm({
         <Input
           type="number"
           step="1"
+          min={0}
+          max={100}
           value={climate.indoorSummerRh}
           onChange={(e) => patch("indoorSummerRh", Number(e.target.value))}
+          suffix="%"
         />
       </Field>
       <Field label={t.project.outdoorRh}>
         <Input
           type="number"
           step="1"
+          min={0}
+          max={100}
           value={climate.outdoorSummerRh}
           onChange={(e) => patch("outdoorSummerRh", Number(e.target.value))}
+          suffix="%"
         />
       </Field>
 
       <div className="md:col-span-2">
-        <p className="label mb-2">Solar irradiance presets (W/m²) — editable</p>
+        <p className="label mb-3">
+          Solar irradiance presets
+          <span className="ml-2 normal-case font-normal text-muted-foreground/80">
+            W/m² — editable per orientation
+          </span>
+        </p>
         <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-2">
           {ORIENTATIONS.map((o) => (
             <Field key={o} label={o}>

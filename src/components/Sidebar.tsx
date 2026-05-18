@@ -32,24 +32,30 @@ export function Sidebar({ className }: { className?: string }) {
   return (
     <aside
       className={cn(
-        "shrink-0 border-r bg-card flex flex-col",
+        "shrink-0 border-r bg-card/60 backdrop-blur flex flex-col",
         "w-full md:w-64",
         className,
       )}
     >
       <Link
         href="/"
-        className="px-5 h-16 flex items-center gap-2 border-b"
+        className="px-5 h-16 flex items-center gap-3 border-b"
       >
-        <div className="size-8 rounded-md bg-primary text-primary-foreground grid place-items-center">
+        <div className="size-9 rounded-lg bg-gradient-to-br from-primary to-primary/70 text-primary-foreground grid place-items-center shadow-card ring-1 ring-primary/20">
           <Thermometer className="size-5" />
         </div>
-        <div className="leading-tight">
-          <div className="text-sm font-semibold">{t.appName}</div>
-          <div className="text-[11px] text-muted-foreground">HVAC loads</div>
+        <div className="leading-tight min-w-0">
+          <div className="text-sm font-semibold tracking-tight truncate">
+            Load Master
+          </div>
+          <div className="text-[11px] text-muted-foreground">
+            HVAC engineering suite
+          </div>
         </div>
       </Link>
-      <nav className="p-3 flex flex-col gap-1">
+
+      <nav className="p-3 flex flex-col gap-0.5">
+        <p className="label px-2 py-1.5">Navigate</p>
         {items.map((it) => {
           const active =
             pathname === it.href ||
@@ -58,27 +64,36 @@ export function Sidebar({ className }: { className?: string }) {
             <Link
               key={it.href}
               href={it.href}
+              aria-current={active ? "page" : undefined}
               className={cn(
-                "flex items-center gap-3 px-3 h-9 rounded-md text-sm transition-colors",
+                "relative flex items-center gap-3 px-3 h-9 rounded-lg text-sm transition-all duration-200 ease-out-expo",
                 active
-                  ? "bg-accent text-accent-foreground"
+                  ? "bg-primary/10 text-primary font-medium"
                   : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
               )}
             >
-              <it.icon className="size-4" />
-              {it.label}
+              {active && (
+                <span
+                  aria-hidden
+                  className="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-r bg-primary"
+                />
+              )}
+              <it.icon className="size-4 shrink-0" />
+              <span className="truncate">{it.label}</span>
             </Link>
           );
         })}
       </nav>
+
       <div className="mt-auto p-3 border-t">
         <UserMenu />
       </div>
-      <div className="p-4 border-t text-[11px] text-muted-foreground">
-        <p className="font-medium text-foreground">Engineering disclaimer</p>
-        <p className="mt-1">
-          Transparent simplified engineering load calculation based on public
-          heat-transfer and psychrometric formulas.
+
+      <div className="p-4 border-t text-[11px] text-muted-foreground bg-muted/20">
+        <p className="font-medium text-foreground/90">Engineering disclaimer</p>
+        <p className="mt-1 leading-relaxed">
+          Transparent simplified load calculation based on public heat-transfer
+          and psychrometric formulas. Not a certified regulatory method.
         </p>
       </div>
     </aside>

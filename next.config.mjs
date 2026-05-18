@@ -18,7 +18,14 @@ try {
 } catch {
   /* ignore invalid URL in env */
 }
-const connectSrc = ["'self'", "https://*.supabase.co", "wss://*.supabase.co"];
+const connectSrc = [
+  "'self'",
+  "https://*.supabase.co",
+  "wss://*.supabase.co",
+  // Vercel Analytics & Speed Insights
+  "https://*.vercel-insights.com",
+  "https://vitals.vercel-insights.com",
+];
 if (supabaseHost) {
   connectSrc.push(supabaseHost);
   if (supabaseHost.startsWith("https://")) {

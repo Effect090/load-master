@@ -40,10 +40,10 @@ export function ZoneResultsTable({ result }: { result: ZoneResult }) {
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
-          <Badge variant="default">
+          <Badge variant="default" dot>
             Heat {fkW(result.totalHeatingW)}
           </Badge>
-          <Badge variant="warning">
+          <Badge variant="info" dot>
             Cool {fkW(result.totalCoolingW)}
           </Badge>
           <Badge variant="outline">
