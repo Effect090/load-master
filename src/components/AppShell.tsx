@@ -20,10 +20,8 @@ export function AppShell({
 
   return (
     <div className="min-h-screen bg-background flex">
-      {/* Desktop sidebar */}
       <Sidebar className="hidden md:flex h-screen sticky top-0" />
 
-      {/* Mobile drawer */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -46,6 +44,7 @@ export function AppShell({
             >
               <div className="flex justify-end p-2">
                 <button
+                  type="button"
                   className="size-9 rounded-md hover:bg-accent grid place-items-center transition-colors"
                   onClick={() => setOpen(false)}
                   aria-label="Close menu"
@@ -60,21 +59,24 @@ export function AppShell({
       </AnimatePresence>
 
       <div className="flex-1 min-w-0 flex flex-col">
-        <header className="h-16 border-b bg-background/85 backdrop-blur sticky top-0 z-30 flex items-center px-4 md:px-6 gap-3">
+        <header className="shrink-0 h-14 md:h-16 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 sticky top-0 z-30 flex items-center px-4 md:px-6 gap-2 md:gap-3">
           <button
-            className="md:hidden size-9 rounded-md hover:bg-accent grid place-items-center transition-colors"
+            type="button"
+            className="md:hidden size-9 shrink-0 rounded-md hover:bg-accent grid place-items-center transition-colors"
             onClick={() => setOpen(true)}
             aria-label="Open menu"
           >
             <Menu className="size-4" />
           </button>
           <div className="flex-1 min-w-0">
-            <h1 className="text-base font-semibold tracking-tight truncate">
+            <h1 className="text-sm md:text-base font-semibold tracking-tight truncate">
               {title}
             </h1>
           </div>
-          <div className="flex items-center gap-2">
-            {actions}
+          {actions ? (
+            <div className="hidden md:flex items-center gap-2 shrink-0">{actions}</div>
+          ) : null}
+          <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
             <UserMenu compact />
             <ThemeToggle />
           </div>
@@ -85,8 +87,11 @@ export function AppShell({
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-          className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto"
+          className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto min-w-0"
         >
+          {actions ? (
+            <div className="md:hidden mb-4 pb-4 border-b border-border/60">{actions}</div>
+          ) : null}
           {children}
         </motion.main>
       </div>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
 import type { Project } from "@/types";
@@ -6,13 +6,16 @@ import { Button } from "@/components/ui/Button";
 import { Download, FileText, Upload } from "lucide-react";
 import { parseProjectJson } from "@/lib/projects/io";
 import { slug } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 export function ExportButtons({
   project,
   onImport,
+  className,
 }: {
   project: Project;
   onImport?: (p: Project) => void;
+  className?: string;
 }) {
   const fileRef = React.useRef<HTMLInputElement>(null);
   const [exporting, setExporting] = React.useState(false);
@@ -20,8 +23,6 @@ export function ExportButtons({
   async function exportPdf() {
     setExporting(true);
     try {
-      // Lazy-load jsPDF + autotable only when the user actually exports,
-      // keeping ~200KB of code out of the initial bundle.
       const { exportProjectPdf } = await import("@/lib/pdf/report");
       await exportProjectPdf(project);
     } catch (e) {
@@ -57,12 +58,34 @@ export function ExportButtons({
   }
 
   return (
-    <div className="flex flex-wrap gap-2">
-      <Button onClick={exportPdf} variant="default" disabled={exporting}>
-        <FileText className="size-4" /> {exporting ? "Exporting…" : "Export PDF"}
+    <div
+      className={cn(
+        "flex flex-wrap gap-2 w-full",
+        /* Full-width stacked buttons on narrow screens for easier tapping */
+        "[&_button]:flex-1 [&_button]:min-w-[calc(50%-0.25rem)] sm:[&_button]:flex-none sm:[&_button]:min-w-0",
+        className,
+      )}
+    >
+      <Button
+        onClick={exportPdf}
+        variant="default"
+        disabled={exporting}
+        size="sm"
+        className="md:h-9 md:px-4 md:text-sm"
+      >
+        <FileText className="size-4 shrink-0" />
+        <span className="truncate">
+          {exporting ? "Exportingâ€¦" : "Export PDF"}
+        </span>
       </Button>
-      <Button onClick={exportJson} variant="outline">
-        <Download className="size-4" /> Export JSON
+      <Button
+        onClick={exportJson}
+        variant="outline"
+        size="sm"
+        className="md:h-9 md:px-4 md:text-sm"
+      >
+        <Download className="size-4 shrink-0" />
+        <span className="truncate">Export JSON</span>
       </Button>
       {onImport && (
         <>
@@ -77,11 +100,18 @@ export function ExportButtons({
               e.target.value = "";
             }}
           />
-          <Button onClick={() => fileRef.current?.click()} variant="outline">
-            <Upload className="size-4" /> Import JSON
+          <Button
+            onClick={() => fileRef.current?.click()}
+            variant="outline"
+            size="sm"
+            className="md:h-9 md:px-4 md:text-sm"
+          >
+            <Upload className="size-4 shrink-0" />
+            <span className="truncate">Import JSON</span>
           </Button>
         </>
       )}
     </div>
   );
 }
+
